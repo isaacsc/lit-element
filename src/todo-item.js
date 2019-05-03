@@ -1,90 +1,62 @@
-import { html, render } from 'lit-html';
+import { LitElement, html, css } from 'lit-element';
 
-class TodoItem extends HTMLElement {
-    constructor() {
-      super();
-      this._shadowRoot = this.attachShadow({ 'mode': 'open' });
-    }
-
-    connectedCallback() {
-      if(!this.hasAttribute('text')) {
-          this.setAttribute('text', 'placeholder');
+class TodoItem extends LitElement {
+  static get properties() {
+    return {
+      text: { 
+        type: String,
+        reflect: true
+      },
+      checked: { 
+        type: Boolean, 
+        reflect: true 
+      },
+      index: { 
+        type: Number 
       }
-      render(this.template(), this._shadowRoot, {eventContext: this});
     }
+  }
 
-    _fireToggle(e) {
-      this.dispatchEvent(new CustomEvent('onToggle', { detail: this.index }));
-    }
-    _fireRemove(e) {
-      this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index }));
-    }
+  constructor() {
+    super();
+    this.text = '';
+    this.checked = false;
+  }
 
-    template() {
-      return html`
-        <style>
-          :host {
-            display: block;
-            font-family: sans-serif;
-          }
-          .completed {
-            text-decoration: line-through;
-          }
-          button {
-            border: none;
-            cursor: pointer;
-            background-color: Transparent;
-          }
-        </style>
+  _fire(eventType) {
+    this.dispatchEvent(new CustomEvent(eventType, { detail: this.index }));   
+  }
+
+  static get styles() {
+    return css`
+      :host {
+        display: block;
+        font-family: sans-serif;
+      }
+      .completed {
+        text-decoration: line-through;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        background-color: Transparent;
+      }
+    `;
+  }
+
+  render() {
+    return html`
         <li class="item">
-          <input 
-            type="checkbox" 
-            .checked=${this._checked}
-            @change=${this._fireToggle}>
-          <label class=${this._checked ? 'completed' : ''}>${this._text}</label>
-          <button @click=${this._fireRemove}>❌</button>
+            <input 
+                type="checkbox" 
+                .checked=${this.checked} 
+                @change=${() => this._fire('onToggle')}>
+            </input>
+            <label class=${this.checked ? 'completed' : ''}>${this.text}</label>
+            <button @click=${() => this._fire('onRemove')}>❌</button>
         </li>
-      `;
-    }
-
-    static get observedAttributes() {
-      return ['text', 'checked', 'index'];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-      switch(name){
-        case 'text':
-          this._text = newValue;
-          break;
-        case 'checked':
-          this._checked = this.hasAttribute('checked');
-          break;
-        case 'index':
-          this._index = parseInt(newValue);
-          break;
-      }
-      render(this.template(), this._shadowRoot, {eventContext: this});
-    }
-
-    set index(val) {
-      this.setAttribute('index', val);
-    }
-
-    get index() {
-      return this._index;
-    }
-
-    get checked() {
-      return this.hasAttribute('checked');
-    }
-
-    set checked(val) {
-      if (val) {
-        this.setAttribute('checked', '');
-      } else {
-        this.removeAttribute('checked');
-      }
-    }
-
+    `;
+  }
 }
+
 window.customElements.define('todo-item', TodoItem);
