@@ -59,6 +59,19 @@ class TodoApp extends HTMLElement {
     }
   }
 
+  _removeTodo(e) {
+    this._todos.splice(e.detail, 1);
+    this._renderTodoList();
+  }
+
+  _toggleTodo(e) {
+    const todo = this._todos[e.detail];
+    this._todos[e.detail] = Object.assign({}, todo, {
+        checked: !todo.checked
+    });
+    this._renderTodoList();
+  }
+
   _shortcutListener(e){
     if (e.key === 'Enter'){
       this._addTodo();
@@ -67,13 +80,18 @@ class TodoApp extends HTMLElement {
 
   _renderTodoList() {
     this.$todoList.innerHTML = '';
-
     this._todos.forEach((todo, index) => {
-      let $todoItem = document.createElement('div');
-      $todoItem.innerHTML = todo.text; 
-      this.$todoList.appendChild($todoItem);
+        let $todoItem = document.createElement('todo-item');
+        $todoItem.setAttribute('text', todo.text);
+        if(todo.checked) {
+            $todoItem.setAttribute('checked', '');                
+    }
+        $todoItem.setAttribute('index', index);
+        $todoItem.addEventListener('onRemove', this._removeTodo.bind(this));
+        $todoItem.addEventListener('onToggle', this._toggleTodo.bind(this));
+        this.$todoList.appendChild($todoItem);
     });
-  }
+}
 
   set todos(value) {
     this._todos = value;
