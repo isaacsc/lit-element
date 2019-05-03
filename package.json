@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@webcomponents/webcomponentsjs": "^2.2.7",
     "lit-element": "^2.1.0"
   }
 }

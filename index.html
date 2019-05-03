@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Lit Element from scratch</title>
-    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.0.0/webcomponents-bundle.js"></script>
-    <script type="module" src="src/todo-app.js"></script>
-    <script type="module" src="src/todo-item.js"></script>
+    <script src="./node_modules/@webcomponents/webcomponentsjs/custom-elements-es5-adapter.js"></script>
+    <script src="./node_modules/@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script type="module" src="index.js"></script>
     <style>
     body {
       margin: 0;
@@ -15,18 +15,6 @@
     </style>
 </head>
 <body>
-  <todo-app></todo-app>    
-  <script>
-    (function() {
-    'use strict';
-      document.addEventListener('WebComponentsReady', function() {
-        console.log('Web components ready!');
-        document.querySelector('todo-app').todos = [
-          {text: "Make a to-do list", checked: false}, 
-          {text: "Finish blog post", checked: false}
-        ];
-      });
-    })();
-  </script>
+  <todo-app></todo-app>
 </body>
 </html>  
